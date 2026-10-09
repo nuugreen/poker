@@ -7,21 +7,18 @@
 <title>Neon Blackjack Casino 3D</title>
 <style>
 *{box-sizing:border-box}
-:root{--gold:#ffd166;--green:#087b50;--red:#ff5263}
-body{
- margin:0;min-height:100vh;color:#fff;font-family:Arial,Helvetica,sans-serif;
- background:radial-gradient(ellipse at top,#173b32,#071610 55%,#020706)
-}
+:root{--gold:#ffd166}
+body{margin:0;min-height:100vh;color:#fff;font-family:Arial,sans-serif;background:radial-gradient(ellipse at top,#173b32,#071610 55%,#020706)}
 button{font:inherit;cursor:pointer}
 button:disabled{opacity:.35;cursor:not-allowed}
 .app{width:min(1100px,100%);margin:auto;padding:18px 12px 35px}
 header{text-align:center;margin-bottom:16px}
 .logo{font-size:clamp(26px,5vw,43px);font-weight:1000;letter-spacing:4px;color:var(--gold);text-shadow:0 3px 0 #704800,0 0 22px #ffbd3d66}
 .subtitle{font-size:11px;letter-spacing:3px;color:#a7c9bb;margin-top:7px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
-.stat{padding:12px 5px;text-align:center;border:1px solid #ffffff18;border-radius:13px;background:linear-gradient(145deg,#183329,#091610);box-shadow:0 5px 12px #0006}
-.stat-label{font-size:10px;color:#a3c3b4;letter-spacing:1px;text-transform:uppercase}
-.stat-value{font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--gold);margin-top:5px}
+.stats{display:grid;grid-template-columns:1fr;margin:16px 0}
+.stat{padding:13px 5px;text-align:center;border:1px solid #ffffff18;border-radius:13px;background:linear-gradient(145deg,#183329,#091610);box-shadow:0 5px 12px #0006}
+.stat-label{font-size:11px;color:#a3c3b4;letter-spacing:1px;text-transform:uppercase}
+.stat-value{font-size:clamp(25px,5vw,34px);font-weight:900;color:var(--gold);margin-top:5px}
 .table{position:relative;overflow:hidden;padding:22px 12px 25px;border:8px solid #623d20;border-radius:48% / 18%;background:radial-gradient(ellipse at center,#13875b,#08633f 58%,#03442d);box-shadow:inset 0 0 0 3px #b17a40,inset 0 0 50px #001d13,0 18px 35px #0009}
 .table:before{content:"";position:absolute;inset:11px;border:1px solid #e8d6a533;border-radius:48% / 18%;pointer-events:none}
 .table-title{position:relative;text-align:center;color:#e8d9a6;font-size:11px;letter-spacing:3px;font-weight:bold;margin-bottom:17px}
@@ -42,41 +39,24 @@ header{text-align:center;margin-bottom:16px}
 .message.win{color:#ffe08a}.message.lose{color:#ffabb2}.message.tie{color:#bce8ff}
 .bet-panel{margin:17px 0 12px;padding:16px 12px;border:1px solid #ffffff20;border-radius:16px;background:linear-gradient(145deg,#142b22,#07140e);box-shadow:0 8px 20px #0005}
 .panel-title{text-align:center;color:#f4dfaa;font-size:12px;font-weight:900;letter-spacing:2px;margin-bottom:12px}
-.bet-display{display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 0 15px}
+.bet-display{display:flex;justify-content:center;align-items:center;margin:8px 0 15px}
 .bet-total{font-size:clamp(25px,5vw,35px);font-weight:1000;color:var(--gold)}
-.bet-caption{font-size:11px;color:#a7c9bb}
+.bet-caption{font-size:11px;color:#a7c9bb;text-align:center}
 .chips{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
 .chip{position:relative;width:57px;height:57px;border-radius:50%;border:4px dashed #fff;outline:2px solid #ffffff88;outline-offset:-7px;color:#fff;font-size:13px;font-weight:1000;text-shadow:0 1px 2px #0009;box-shadow:0 4px 0 #0007,0 6px 10px #0004;transition:transform .12s}
 .chip:hover:not(:disabled){transform:translateY(-3px)}
-.chip:active:not(:disabled){transform:scale(.94)}
-.chip-10{background:#2878dc}
-.chip-25{background:#d7374e}
-.chip-50{background:#24282d}
-.chip-100{background:#218e59}
-.chip-250{background:#8c42bd}
-.chip-500{background:#c18b24}
-.bet-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:15px}
+.chip-10{background:#2878dc}.chip-25{background:#d7374e}.chip-50{background:#24282d}.chip-100{background:#218e59}.chip-250{background:#8c42bd}.chip-500{background:#c18b24}
+.bet-actions,.controls{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:15px 0}
 .btn{padding:12px 17px;border:0;border-radius:10px;font-weight:900;box-shadow:0 4px 0 #0004;transition:transform .12s,filter .12s}
 .btn:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-2px)}
-.btn:active:not(:disabled){transform:translateY(2px)}
 .btn-gold{background:linear-gradient(#ffe69a,#e6a82e);color:#392300}
 .btn-blue{background:linear-gradient(#74c7ff,#2585cb);color:#061b2b}
 .btn-red{background:linear-gradient(#ff8b94,#db3446);color:white}
 .btn-dark{background:linear-gradient(#365b4d,#18372c);color:white;border:1px solid #ffffff24}
-.controls{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0}
 .controls .btn{min-width:105px}
 .status{text-align:center;color:#c4dfd2;font-size:12px;line-height:1.6;min-height:19px}
 .footer{text-align:center;color:#83a596;font-size:11px;line-height:1.8;margin-top:19px}
-@media(max-width:500px){
- .app{padding:13px 8px 25px}
- .table{border-width:5px;padding:17px 6px 20px}
- .cards{gap:4px}
- .hand-section{min-height:112px}
- .chip{width:51px;height:51px;font-size:12px}
- .bet-panel{padding:13px 7px}
- .btn{padding:11px 12px}
- .controls .btn{min-width:calc(50% - 8px)}
-}
+@media(max-width:500px){.app{padding:13px 8px 25px}.table{border-width:5px;padding:17px 6px 20px}.cards{gap:4px}.hand-section{min-height:112px}.chip{width:51px;height:51px;font-size:12px}.bet-panel{padding:13px 7px}.btn{padding:11px 12px}.controls .btn{min-width:calc(50% - 8px)}}
 </style>
 </head>
 <body>
@@ -87,9 +67,10 @@ header{text-align:center;margin-bottom:16px}
 </header>
 
 <section class="stats">
- <div class="stat"><div class="stat-label">Saldo tersedia</div><div class="stat-value" id="balance">1.000</div></div>
- <div class="stat"><div class="stat-label">Menang</div><div class="stat-value" id="wins">0</div></div>
- <div class="stat"><div class="stat-label">Kalah</div><div class="stat-value" id="losses">0</div></div>
+ <div class="stat">
+  <div class="stat-label">Saldo Tersedia</div>
+  <div class="stat-value" id="balance">1.000</div>
+ </div>
 </section>
 
 <main class="table">
@@ -137,9 +118,9 @@ header{text-align:center;margin-bottom:16px}
 
 <div class="status" id="status">Pilih chip untuk menambah taruhan. Poin virtual.</div>
 <div class="footer">
- Chip bisa digabung untuk menentukan total taruhan.<br>
- Kemenangan, kekalahan, dan seri akan memperbarui saldo otomatis.<br>
- Permainan ini menggunakan poin virtual, bukan uang sungguhan.
+ Chip dapat digabung untuk menentukan total taruhan.<br>
+ Menang membayar taruhan, kalah kehilangan taruhan, seri mengembalikan taruhan.<br>
+ RESET GAME mengembalikan saldo ke 1.000 poin. Semua poin bersifat virtual.
 </div>
 </div>
 
@@ -150,12 +131,12 @@ const STARTING_BALANCE=1000;
 const AUTO_NEXT_DELAY=2200;
 
 let balance=STARTING_BALANCE;
-let wins=0,losses=0,ties=0,roundNumber=0;
-let betAmount=10,currentBet=0;
+let roundNumber=0;
+let betAmount=10;
+let currentBet=0;
 let deck=[],playerHand=[],dealerHand=[];
 let roundActive=false,roundResolved=false,hideDealerCard=true;
 let nextRoundTimer=null;
-let autoNext=true;
 
 const suits=[
  {symbol:"♠",color:"black"},
@@ -209,13 +190,12 @@ function setMessage(text,type=""){
 
 function updateStats(){
  document.getElementById("balance").textContent=fmt(balance);
- document.getElementById("wins").textContent=wins;
- document.getElementById("losses").textContent=losses;
  document.getElementById("betAmount").textContent=fmt(betAmount);
- document.getElementById("dealBtn").disabled=roundActive||roundResolved||betAmount<=0||betAmount>balance;
- document.getElementById("clearBetBtn").disabled=roundActive||roundResolved;
- document.querySelectorAll(".chip").forEach(b=>{
-  b.disabled=roundActive||roundResolved;
+ document.getElementById("dealBtn").disabled=
+  roundActive||betAmount<=0||betAmount>balance;
+ document.getElementById("clearBetBtn").disabled=roundActive;
+ document.querySelectorAll(".chip").forEach(button=>{
+  button.disabled=roundActive;
  });
 }
 
@@ -257,42 +237,32 @@ function renderHand(){
 
  document.getElementById("playerScore").textContent=
   playerHand.length?handValue(playerHand):"—";
-
  document.getElementById("dealerScore").textContent=
   !dealerHand.length?"—":
   hideDealerCard&&dealerHand.length>1
    ?handValue([dealerHand[0]])+" + ?"
    :handValue(dealerHand);
-
  updateStats();
 }
 
 function cancelAutoNext(){
- if(nextRoundTimer){
-  clearTimeout(nextRoundTimer);
-  nextRoundTimer=null;
- }
+ if(nextRoundTimer){clearTimeout(nextRoundTimer);nextRoundTimer=null;}
 }
 
 function addBet(amount){
  if(roundActive)return;
  cancelAutoNext();
-
- // Setelah hasil ronde, pemain boleh mengubah taruhan berikutnya.
  roundResolved=false;
 
  if(betAmount+amount>balance){
   setMessage("Saldo tidak cukup untuk menambah chip taruhan.","lose");
-  document.getElementById("status").textContent=
-   "Saldo tersedia: "+fmt(balance)+" poin.";
+  document.getElementById("status").textContent="Saldo tersedia: "+fmt(balance)+" poin.";
   updateStats();
   return;
  }
-
  betAmount+=amount;
  setMessage("Taruhan saat ini "+fmt(betAmount)+" poin.");
- document.getElementById("status").textContent=
-  "Tekan DEAL untuk mulai, atau tambahkan chip lagi.";
+ document.getElementById("status").textContent="Tekan DEAL untuk mulai, atau tambahkan chip lagi.";
  updateStats();
 }
 
@@ -302,8 +272,7 @@ function clearBet(){
  roundResolved=false;
  betAmount=0;
  setMessage("Taruhan dihapus. Pilih chip untuk memasang taruhan.");
- document.getElementById("status").textContent=
-  "Saldo tersedia: "+fmt(balance)+" poin.";
+ document.getElementById("status").textContent="Saldo tersedia: "+fmt(balance)+" poin.";
  updateStats();
 }
 
@@ -332,17 +301,11 @@ function deal(){
  setButtons();
 
  if(natural(playerHand)&&natural(dealerHand)){
-  hideDealerCard=false;
-  renderHand();
-  finishRound("tie","Blackjack keduanya! Seri.");
+  hideDealerCard=false;renderHand();finishRound("tie","Blackjack keduanya! Seri.");
  }else if(natural(playerHand)){
-  hideDealerCard=false;
-  renderHand();
-  finishRound("blackjack","BLACKJACK! Kamu menang!");
+  hideDealerCard=false;renderHand();finishRound("blackjack","BLACKJACK! Kamu menang!");
  }else if(natural(dealerHand)){
-  hideDealerCard=false;
-  renderHand();
-  finishRound("lose","Dealer mendapat Blackjack. Kamu kalah.");
+  hideDealerCard=false;renderHand();finishRound("lose","Dealer mendapat Blackjack. Kamu kalah.");
  }
 }
 
@@ -353,9 +316,7 @@ function hit(){
 
  const total=handValue(playerHand);
  if(total>21){
-  hideDealerCard=false;
-  renderHand();
-  finishRound("lose","Bust! Nilai kamu lebih dari 21.");
+  hideDealerCard=false;renderHand();finishRound("lose","Bust! Nilai kamu lebih dari 21.");
  }else if(total===21){
   stand();
  }else{
@@ -367,7 +328,6 @@ function hit(){
 function stand(){
  if(!roundActive||roundResolved)return;
  hideDealerCard=false;
-
  while(handValue(dealerHand)<17)dealerHand.push(drawCard());
  renderHand();
 
@@ -380,16 +340,13 @@ function stand(){
 
 function doubleDown(){
  if(!roundActive||roundResolved||playerHand.length!==2||balance<currentBet)return;
-
  balance-=currentBet;
  currentBet*=2;
  playerHand.push(drawCard());
  renderHand();
 
  if(handValue(playerHand)>21){
-  hideDealerCard=false;
-  renderHand();
-  finishRound("lose","Double Down: bust! Kamu kalah.");
+  hideDealerCard=false;renderHand();finishRound("lose","Double Down: bust! Kamu kalah.");
  }else{
   stand();
  }
@@ -403,17 +360,13 @@ function finishRound(result,message){
 
  if(result==="win"){
   balance+=currentBet*2;
-  wins++;
-  setMessage(message+" Untung bersih +"+fmt(currentBet)+" poin.","win");
+  setMessage(message+" Pembayaran total "+fmt(currentBet*2)+" poin.","win");
  }else if(result==="blackjack"){
   balance+=currentBet*2.5;
-  wins++;
-  setMessage(message+" Pembayaran 3:2!","win");
+  setMessage(message+" Pembayaran total "+fmt(currentBet*2.5)+" poin.","win");
  }else if(result==="lose"){
-  losses++;
   setMessage(message+" Taruhan "+fmt(currentBet)+" poin hilang.","lose");
  }else{
-  ties++;
   balance+=currentBet;
   setMessage(message+" Taruhan dikembalikan.","tie");
  }
@@ -423,7 +376,7 @@ function finishRound(result,message){
 
  if(balance>=betAmount&&betAmount>0){
   document.getElementById("status").textContent=
-   "Ronde selesai. Ronde baru otomatis dimulai dalam beberapa detik. Tambah chip jika ingin mengubah taruhan.";
+   "Ronde berikutnya dimulai otomatis. Ubah taruhan setelah hasil muncul jika diinginkan.";
   nextRoundTimer=setTimeout(()=>{
    nextRoundTimer=null;
    if(!roundActive&&roundResolved&&betAmount>0&&betAmount<=balance){
@@ -433,8 +386,7 @@ function finishRound(result,message){
   },AUTO_NEXT_DELAY);
  }else{
   document.getElementById("status").textContent=
-   "Saldo tidak cukup untuk taruhan berikutnya. Pilih taruhan lebih kecil.";
-  // Buka kontrol taruhan agar pemain bisa menyesuaikan nominal.
+   "Saldo tidak cukup untuk taruhan berikutnya. Hapus taruhan lalu pilih nominal lebih kecil, atau tekan RESET GAME.";
   roundResolved=false;
   updateStats();
  }
@@ -443,23 +395,25 @@ function finishRound(result,message){
 function resetGame(){
  cancelAutoNext();
  balance=STARTING_BALANCE;
- wins=0;losses=0;ties=0;roundNumber=0;
- betAmount=10;currentBet=0;
+ roundNumber=0;
+ betAmount=10;
+ currentBet=0;
  deck=makeDeck();
- playerHand=[];dealerHand=[];
- roundActive=false;roundResolved=false;hideDealerCard=true;
+ playerHand=[];
+ dealerHand=[];
+ roundActive=false;
+ roundResolved=false;
+ hideDealerCard=true;
  renderHand();
- setMessage("Game direset. Pilih taruhan dan tekan DEAL.");
- document.getElementById("status").textContent=
-  "Saldo awal "+fmt(STARTING_BALANCE)+" poin.";
+ setMessage("Saldo dipulihkan. Pilih taruhan lalu tekan DEAL.");
+ document.getElementById("status").textContent="Saldo tersedia: "+fmt(STARTING_BALANCE)+" poin.";
  setButtons();
 }
 
 deck=makeDeck();
 renderHand();
 setMessage("Pilih chip taruhan, lalu tekan DEAL.");
-document.getElementById("status").textContent=
- "Saldo awal 1.000 poin. Taruhan awal 10 poin.";
+document.getElementById("status").textContent="Saldo awal 1.000 poin. Taruhan awal 10 poin.";
 setButtons();
 </script>
 </body>
