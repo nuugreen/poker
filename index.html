@@ -3,668 +3,464 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Blackjack 3D</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Neon Blackjack Casino 3D</title>
 <style>
 *{box-sizing:border-box}
-:root{
-  --gold:#ffd166;
-  --green:#087b50;
-  --dark:#06130f;
-  --red:#ff5263;
-}
+:root{--gold:#ffd166;--green:#087b50;--red:#ff5263}
 body{
-  margin:0;
-  min-height:100vh;
-  color:#fff;
-  font-family:Arial,Helvetica,sans-serif;
-  background:
-    radial-gradient(ellipse at top,#173b32 0%,#071610 48%,#020706 100%);
+ margin:0;min-height:100vh;color:#fff;font-family:Arial,Helvetica,sans-serif;
+ background:radial-gradient(ellipse at top,#173b32,#071610 55%,#020706)
 }
-button{font:inherit}
-.app{
-  width:min(1100px,100%);
-  margin:auto;
-  padding:20px 14px 36px;
-}
-header{text-align:center;margin-bottom:18px}
-.logo{
-  color:var(--gold);
-  font-weight:1000;
-  letter-spacing:4px;
-  font-size:clamp(25px,5vw,42px);
-  text-shadow:0 3px 0 #704800,0 0 22px #ffbd3d66;
-}
-.subtitle{
-  margin-top:7px;
-  color:#a7c9bb;
-  font-size:12px;
-  letter-spacing:3px;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin:18px 0;
-}
-.stat{
-  text-align:center;
-  padding:13px 6px;
-  border:1px solid #ffffff18;
-  border-radius:14px;
-  background:linear-gradient(145deg,#183329,#091610);
-  box-shadow:0 5px 12px #0006;
-}
-.stat-label{
-  color:#a3c3b4;
-  font-size:11px;
-  letter-spacing:1px;
-  text-transform:uppercase;
-}
-.stat-value{
-  color:var(--gold);
-  font-size:clamp(20px,4vw,28px);
-  font-weight:900;
-  margin-top:6px;
-}
-.table{
-  position:relative;
-  overflow:hidden;
-  padding:24px 14px 26px;
-  border:8px solid #623d20;
-  border-radius:48% / 18%;
-  background:
-    radial-gradient(ellipse at center,#13875b 0%,#08633f 55%,#03442d 100%);
-  box-shadow:
-    inset 0 0 0 3px #b17a40,
-    inset 0 0 50px #001d13,
-    0 18px 35px #0009;
-}
-.table:before{
-  content:"";
-  position:absolute;
-  inset:12px;
-  border:1px solid #e8d6a533;
-  border-radius:48% / 18%;
-  pointer-events:none;
-}
-.table-title{
-  text-align:center;
-  color:#e8d9a6;
-  font-size:12px;
-  letter-spacing:3px;
-  font-weight:bold;
-  margin:0 0 18px;
-}
-.hand-section{
-  position:relative;
-  z-index:1;
-  min-height:150px;
-  text-align:center;
-  margin:14px 0 22px;
-}
-.hand-heading{
-  color:#d9f4e6;
-  font-weight:bold;
-  letter-spacing:2px;
-  font-size:12px;
-  margin-bottom:12px;
-}
-.hand-heading span{
-  display:inline-block;
-  margin-left:7px;
-  color:var(--gold);
-  font-size:16px;
-}
-.cards{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:8px;
-  min-height:108px;
-}
-.card{
-  position:relative;
-  width:clamp(61px,10vw,82px);
-  height:clamp(89px,14vw,118px);
-  flex:0 0 auto;
-  border-radius:9px;
-  background:linear-gradient(135deg,#fff,#e9e9e9);
-  color:#171717;
-  border:2px solid #fff;
-  box-shadow:0 7px 10px #00190f88;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  animation:deal .32s ease-out both;
-  transform-style:preserve-3d;
-}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.35;cursor:not-allowed}
+.app{width:min(1100px,100%);margin:auto;padding:18px 12px 35px}
+header{text-align:center;margin-bottom:16px}
+.logo{font-size:clamp(26px,5vw,43px);font-weight:1000;letter-spacing:4px;color:var(--gold);text-shadow:0 3px 0 #704800,0 0 22px #ffbd3d66}
+.subtitle{font-size:11px;letter-spacing:3px;color:#a7c9bb;margin-top:7px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
+.stat{padding:12px 5px;text-align:center;border:1px solid #ffffff18;border-radius:13px;background:linear-gradient(145deg,#183329,#091610);box-shadow:0 5px 12px #0006}
+.stat-label{font-size:10px;color:#a3c3b4;letter-spacing:1px;text-transform:uppercase}
+.stat-value{font-size:clamp(20px,4vw,28px);font-weight:900;color:var(--gold);margin-top:5px}
+.table{position:relative;overflow:hidden;padding:22px 12px 25px;border:8px solid #623d20;border-radius:48% / 18%;background:radial-gradient(ellipse at center,#13875b,#08633f 58%,#03442d);box-shadow:inset 0 0 0 3px #b17a40,inset 0 0 50px #001d13,0 18px 35px #0009}
+.table:before{content:"";position:absolute;inset:11px;border:1px solid #e8d6a533;border-radius:48% / 18%;pointer-events:none}
+.table-title{position:relative;text-align:center;color:#e8d9a6;font-size:11px;letter-spacing:3px;font-weight:bold;margin-bottom:17px}
+.hand-section{position:relative;z-index:1;min-height:125px;text-align:center;margin:12px 0 19px}
+.hand-heading{font-size:12px;color:#d9f4e6;font-weight:bold;letter-spacing:2px;margin-bottom:11px}
+.hand-heading span{margin-left:7px;color:var(--gold);font-size:16px}
+.cards{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:7px;min-height:100px}
+.card{position:relative;width:clamp(57px,10vw,80px);height:clamp(83px,14vw,115px);flex:0 0 auto;border-radius:9px;background:linear-gradient(135deg,#fff,#e9e9e9);color:#171717;border:2px solid white;box-shadow:0 7px 10px #00190f88;display:flex;align-items:center;justify-content:center;animation:deal .3s ease-out both}
 .card.red{color:#d91f35}
-.card .corner{
-  position:absolute;
-  top:5px;
-  left:6px;
-  line-height:1.05;
-  text-align:center;
-  font-weight:900;
-  font-size:17px;
-}
-.card .corner.bottom{
-  top:auto;
-  left:auto;
-  bottom:5px;
-  right:6px;
-  transform:rotate(180deg);
-}
-.card .suit{
-  font-size:36px;
-  text-shadow:0 1px 0 #0001;
-}
-.card.back{
-  color:#fff;
-  background:
-    repeating-linear-gradient(45deg,#183b89 0 5px,#244da6 5px 10px);
-  border:3px solid #fff;
-}
-.card.back:before{
-  content:"♠";
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  width:70%;
-  height:76%;
-  border:2px solid #d8e3ff;
-  border-radius:5px;
-  font-size:36px;
-  color:#d8e3ff;
-}
-@keyframes deal{
-  from{opacity:0;transform:translateY(-22px) rotateY(45deg) scale(.8)}
-  to{opacity:1;transform:translateY(0) rotateY(0) scale(1)}
-}
-.divider{
-  height:1px;
-  margin:10px 7%;
-  background:linear-gradient(90deg,transparent,#f3d69b88,transparent);
-}
-.message{
-  position:relative;
-  z-index:1;
-  text-align:center;
-  min-height:48px;
-  margin:14px 0;
-  color:#fff;
-  font-size:clamp(15px,3vw,19px);
-  font-weight:800;
-  text-shadow:0 2px 8px #00180f;
-}
-.message.win{color:#ffe08a}
-.message.lose{color:#ffabb2}
-.message.tie{color:#bce8ff}
-.controls{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:10px;
-  margin:20px 0 12px;
-}
-.btn{
-  min-width:105px;
-  padding:13px 17px;
-  border:0;
-  border-radius:10px;
-  font-weight:900;
-  cursor:pointer;
-  transition:transform .15s,filter .15s,opacity .15s;
-  box-shadow:0 5px 0 #0004;
-}
-.btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.1)}
-.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 2px 0 #0004}
-.btn:disabled{opacity:.35;cursor:not-allowed}
+.corner{position:absolute;top:5px;left:6px;line-height:1.05;text-align:center;font-size:16px;font-weight:900}
+.corner.bottom{top:auto;left:auto;bottom:5px;right:6px;transform:rotate(180deg)}
+.suit{font-size:34px}
+.card.back{background:repeating-linear-gradient(45deg,#183b89 0 5px,#244da6 5px 10px);border:3px solid white}
+.card.back:before{content:"♠";display:flex;align-items:center;justify-content:center;width:70%;height:76%;border:2px solid #d8e3ff;border-radius:5px;font-size:34px;color:#d8e3ff}
+@keyframes deal{from{opacity:0;transform:translateY(-18px) rotateY(35deg) scale(.8)}to{opacity:1;transform:translateY(0) rotateY(0) scale(1)}}
+.divider{height:1px;margin:9px 7%;background:linear-gradient(90deg,transparent,#f3d69b88,transparent)}
+.message{position:relative;z-index:1;text-align:center;min-height:43px;margin:12px 0;color:white;font-size:clamp(14px,3vw,18px);font-weight:800}
+.message.win{color:#ffe08a}.message.lose{color:#ffabb2}.message.tie{color:#bce8ff}
+.bet-panel{margin:17px 0 12px;padding:16px 12px;border:1px solid #ffffff20;border-radius:16px;background:linear-gradient(145deg,#142b22,#07140e);box-shadow:0 8px 20px #0005}
+.panel-title{text-align:center;color:#f4dfaa;font-size:12px;font-weight:900;letter-spacing:2px;margin-bottom:12px}
+.bet-display{display:flex;justify-content:center;align-items:center;gap:12px;margin:8px 0 15px}
+.bet-total{font-size:clamp(25px,5vw,35px);font-weight:1000;color:var(--gold)}
+.bet-caption{font-size:11px;color:#a7c9bb}
+.chips{display:flex;justify-content:center;flex-wrap:wrap;gap:9px}
+.chip{position:relative;width:57px;height:57px;border-radius:50%;border:4px dashed #fff;outline:2px solid #ffffff88;outline-offset:-7px;color:#fff;font-size:13px;font-weight:1000;text-shadow:0 1px 2px #0009;box-shadow:0 4px 0 #0007,0 6px 10px #0004;transition:transform .12s}
+.chip:hover:not(:disabled){transform:translateY(-3px)}
+.chip:active:not(:disabled){transform:scale(.94)}
+.chip-10{background:#2878dc}
+.chip-25{background:#d7374e}
+.chip-50{background:#24282d}
+.chip-100{background:#218e59}
+.chip-250{background:#8c42bd}
+.chip-500{background:#c18b24}
+.bet-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:15px}
+.btn{padding:12px 17px;border:0;border-radius:10px;font-weight:900;box-shadow:0 4px 0 #0004;transition:transform .12s,filter .12s}
+.btn:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-2px)}
+.btn:active:not(:disabled){transform:translateY(2px)}
 .btn-gold{background:linear-gradient(#ffe69a,#e6a82e);color:#392300}
 .btn-blue{background:linear-gradient(#74c7ff,#2585cb);color:#061b2b}
-.btn-red{background:linear-gradient(#ff8b94,#db3446);color:#fff}
-.btn-dark{background:linear-gradient(#365b4d,#18372c);color:#fff;border:1px solid #ffffff24}
-.footer{
-  text-align:center;
-  color:#83a596;
-  font-size:11px;
-  line-height:1.8;
-  margin-top:20px;
-}
-.status{
-  text-align:center;
-  color:#c4dfd2;
-  font-size:12px;
-  min-height:18px;
-}
+.btn-red{background:linear-gradient(#ff8b94,#db3446);color:white}
+.btn-dark{background:linear-gradient(#365b4d,#18372c);color:white;border:1px solid #ffffff24}
+.controls{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0}
+.controls .btn{min-width:105px}
+.status{text-align:center;color:#c4dfd2;font-size:12px;line-height:1.6;min-height:19px}
+.footer{text-align:center;color:#83a596;font-size:11px;line-height:1.8;margin-top:19px}
 @media(max-width:500px){
-  .app{padding:14px 8px 25px}
-  .table{border-width:5px;padding:19px 7px 22px}
-  .hand-section{min-height:125px}
-  .cards{gap:5px}
-  .btn{min-width:calc(50% - 8px);padding:12px 8px}
-  .stats{gap:6px}
-  .stat{padding:11px 3px}
+ .app{padding:13px 8px 25px}
+ .table{border-width:5px;padding:17px 6px 20px}
+ .cards{gap:4px}
+ .hand-section{min-height:112px}
+ .chip{width:51px;height:51px;font-size:12px}
+ .bet-panel{padding:13px 7px}
+ .btn{padding:11px 12px}
+ .controls .btn{min-width:calc(50% - 8px)}
 }
 </style>
 </head>
-
 <body>
 <div class="app">
-  <header>
-    <div class="logo">BLACKJACK 21</div>
-    <div class="subtitle">NEON CASINO EXPERIENCE</div>
-  </header>
+<header>
+ <div class="logo">BLACKJACK 21</div>
+ <div class="subtitle">NEON CASINO EXPERIENCE</div>
+</header>
 
-  <section class="stats">
-    <div class="stat">
-      <div class="stat-label">Saldo</div>
-      <div class="stat-value" id="balance">1.000</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Menang</div>
-      <div class="stat-value" id="wins">0</div>
-    </div>
-    <div class="stat">
-      <div class="stat-label">Kalah</div>
-      <div class="stat-value" id="losses">0</div>
-    </div>
-  </section>
+<section class="stats">
+ <div class="stat"><div class="stat-label">Saldo tersedia</div><div class="stat-value" id="balance">1.000</div></div>
+ <div class="stat"><div class="stat-label">Menang</div><div class="stat-value" id="wins">0</div></div>
+ <div class="stat"><div class="stat-label">Kalah</div><div class="stat-value" id="losses">0</div></div>
+</section>
 
-  <main class="table">
-    <div class="table-title">♠ &nbsp; DEALER TABLE &nbsp; ♠</div>
+<main class="table">
+ <div class="table-title">♠ &nbsp; CASINO BLACKJACK TABLE &nbsp; ♠</div>
+ <section class="hand-section">
+  <div class="hand-heading">DEALER <span id="dealerScore">—</span></div>
+  <div class="cards" id="dealerCards"></div>
+ </section>
+ <div class="divider"></div>
+ <section class="hand-section">
+  <div class="hand-heading">KARTU KAMU <span id="playerScore">—</span></div>
+  <div class="cards" id="playerCards"></div>
+ </section>
+ <div class="message" id="message">Pilih chip taruhan, lalu tekan DEAL.</div>
+</main>
 
-    <section class="hand-section">
-      <div class="hand-heading">
-        DEALER <span id="dealerScore">—</span>
-      </div>
-      <div class="cards" id="dealerCards"></div>
-    </section>
-
-    <div class="divider"></div>
-
-    <section class="hand-section">
-      <div class="hand-heading">
-        KARTU KAMU <span id="playerScore">—</span>
-      </div>
-      <div class="cards" id="playerCards"></div>
-    </section>
-
-    <div class="message" id="message">Menyiapkan meja...</div>
-  </main>
-
-  <div class="controls">
-    <button class="btn btn-gold" id="hitBtn" onclick="hit()" disabled>HIT +</button>
-    <button class="btn btn-blue" id="standBtn" onclick="stand()" disabled>STAND</button>
-    <button class="btn btn-red" id="doubleBtn" onclick="doubleDown()" disabled>DOUBLE</button>
-    <button class="btn btn-dark" id="resetBtn" onclick="resetGame()">RESET GAME</button>
+<section class="bet-panel">
+ <div class="panel-title">PILIH CHIP TARUHAN</div>
+ <div class="bet-display">
+  <div>
+   <div class="bet-caption">TOTAL TARUHAN</div>
+   <div class="bet-total"><span id="betAmount">10</span> <span style="font-size:12px">POIN</span></div>
   </div>
+ </div>
+ <div class="chips">
+  <button class="chip chip-10" onclick="addBet(10)">10</button>
+  <button class="chip chip-25" onclick="addBet(25)">25</button>
+  <button class="chip chip-50" onclick="addBet(50)">50</button>
+  <button class="chip chip-100" onclick="addBet(100)">100</button>
+  <button class="chip chip-250" onclick="addBet(250)">250</button>
+  <button class="chip chip-500" onclick="addBet(500)">500</button>
+ </div>
+ <div class="bet-actions">
+  <button class="btn btn-dark" onclick="clearBet()" id="clearBetBtn">HAPUS TARUHAN</button>
+  <button class="btn btn-gold" onclick="deal()" id="dealBtn">DEAL / MULAI</button>
+ </div>
+</section>
 
-  <div class="status" id="status">Taruhan per ronde: 10 poin.</div>
+<div class="controls">
+ <button class="btn btn-blue" id="hitBtn" onclick="hit()" disabled>HIT +</button>
+ <button class="btn btn-gold" id="standBtn" onclick="stand()" disabled>STAND</button>
+ <button class="btn btn-red" id="doubleBtn" onclick="doubleDown()" disabled>DOUBLE DOWN</button>
+ <button class="btn btn-dark" onclick="resetGame()">RESET GAME</button>
+</div>
 
-  <div class="footer">
-    Aturan Blackjack: dekati angka 21 tanpa melewatinya.<br>
-    As bernilai 1 atau 11. J, Q, K bernilai 10.<br>
-    Ini permainan simulasi dengan poin virtual, bukan uang sungguhan.
-  </div>
+<div class="status" id="status">Pilih chip untuk menambah taruhan. Poin virtual.</div>
+<div class="footer">
+ Chip bisa digabung untuk menentukan total taruhan.<br>
+ Kemenangan, kekalahan, dan seri akan memperbarui saldo otomatis.<br>
+ Permainan ini menggunakan poin virtual, bukan uang sungguhan.
+</div>
 </div>
 
 <script>
 "use strict";
 
-const BET = 10;
-const STARTING_BALANCE = 1000;
-const AUTO_NEXT_DELAY = 1800;
+const STARTING_BALANCE=1000;
+const AUTO_NEXT_DELAY=2200;
 
-let balance = STARTING_BALANCE;
-let wins = 0;
-let losses = 0;
-let ties = 0;
+let balance=STARTING_BALANCE;
+let wins=0,losses=0,ties=0,roundNumber=0;
+let betAmount=10,currentBet=0;
+let deck=[],playerHand=[],dealerHand=[];
+let roundActive=false,roundResolved=false,hideDealerCard=true;
+let nextRoundTimer=null;
+let autoNext=true;
 
-let deck = [];
-let playerHand = [];
-let dealerHand = [];
-let roundActive = false;
-let roundResolved = false;
-let currentBet = 0;
-let hideDealerCard = true;
-let nextRoundTimer = null;
-let roundNumber = 0;
-
-const suits = [
-  {symbol:"♠", color:"black"},
-  {symbol:"♥", color:"red"},
-  {symbol:"♦", color:"red"},
-  {symbol:"♣", color:"black"}
+const suits=[
+ {symbol:"♠",color:"black"},
+ {symbol:"♥",color:"red"},
+ {symbol:"♦",color:"red"},
+ {symbol:"♣",color:"black"}
 ];
-const ranks = [
-  {name:"A", value:11},
-  {name:"2", value:2},
-  {name:"3", value:3},
-  {name:"4", value:4},
-  {name:"5", value:5},
-  {name:"6", value:6},
-  {name:"7", value:7},
-  {name:"8", value:8},
-  {name:"9", value:9},
-  {name:"10", value:10},
-  {name:"J", value:10},
-  {name:"Q", value:10},
-  {name:"K", value:10}
+const ranks=[
+ {name:"A",value:11},{name:"2",value:2},{name:"3",value:3},
+ {name:"4",value:4},{name:"5",value:5},{name:"6",value:6},
+ {name:"7",value:7},{name:"8",value:8},{name:"9",value:9},
+ {name:"10",value:10},{name:"J",value:10},{name:"Q",value:10},
+ {name:"K",value:10}
 ];
+
+function fmt(n){return Math.floor(n).toLocaleString("id-ID");}
 
 function makeDeck(){
-  const cards = [];
-  for(let d=0; d<6; d++){
-    for(const suit of suits){
-      for(const rank of ranks){
-        cards.push({
-          rank:rank.name,
-          value:rank.value,
-          suit:suit.symbol,
-          color:suit.color
-        });
-      }
-    }
+ const cards=[];
+ for(let d=0;d<6;d++){
+  for(const s of suits){
+   for(const r of ranks)cards.push({rank:r.name,value:r.value,suit:s.symbol,color:s.color});
   }
-
-  for(let i=cards.length-1; i>0; i--){
-    const j=Math.floor(Math.random()*(i+1));
-    [cards[i],cards[j]]=[cards[j],cards[i]];
-  }
-  return cards;
+ }
+ for(let i=cards.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [cards[i],cards[j]]=[cards[j],cards[i]];
+ }
+ return cards;
 }
 
 function drawCard(){
-  if(deck.length < 20) deck=makeDeck();
-  return deck.pop();
+ if(deck.length<20)deck=makeDeck();
+ return deck.pop();
 }
 
 function handValue(hand){
-  let total=0;
-  let aces=0;
-
-  for(const card of hand){
-    total+=card.value;
-    if(card.rank==="A") aces++;
-  }
-
-  while(total>21 && aces>0){
-    total-=10;
-    aces--;
-  }
-  return total;
+ let total=0,aces=0;
+ for(const c of hand){total+=c.value;if(c.rank==="A")aces++;}
+ while(total>21&&aces>0){total-=10;aces--;}
+ return total;
 }
 
-function isNatural(hand){
-  return hand.length===2 && handValue(hand)===21;
-}
+function natural(hand){return hand.length===2&&handValue(hand)===21;}
 
-function formatNumber(value){
-  return Math.floor(value).toLocaleString("id-ID");
+function setMessage(text,type=""){
+ const el=document.getElementById("message");
+ el.textContent=text;
+ el.className="message"+(type?" "+type:"");
 }
 
 function updateStats(){
-  document.getElementById("balance").textContent=formatNumber(balance);
-  document.getElementById("wins").textContent=wins;
-  document.getElementById("losses").textContent=losses;
-}
-
-function setMessage(text,type=""){
-  const el=document.getElementById("message");
-  el.textContent=text;
-  el.className="message"+(type?" "+type:"");
+ document.getElementById("balance").textContent=fmt(balance);
+ document.getElementById("wins").textContent=wins;
+ document.getElementById("losses").textContent=losses;
+ document.getElementById("betAmount").textContent=fmt(betAmount);
+ document.getElementById("dealBtn").disabled=roundActive||roundResolved||betAmount<=0||betAmount>balance;
+ document.getElementById("clearBetBtn").disabled=roundActive||roundResolved;
+ document.querySelectorAll(".chip").forEach(b=>{
+  b.disabled=roundActive||roundResolved;
+ });
 }
 
 function setButtons(){
-  document.getElementById("hitBtn").disabled=!roundActive;
-  document.getElementById("standBtn").disabled=!roundActive;
-  document.getElementById("doubleBtn").disabled=
-    !roundActive || playerHand.length!==2 || balance<currentBet;
+ document.getElementById("hitBtn").disabled=!roundActive;
+ document.getElementById("standBtn").disabled=!roundActive;
+ document.getElementById("doubleBtn").disabled=
+  !roundActive||playerHand.length!==2||balance<currentBet;
+ updateStats();
 }
 
 function renderCard(card,hidden=false){
-  const el=document.createElement("div");
-
-  if(hidden){
-    el.className="card back";
-    return el;
-  }
-
-  el.className="card"+(card.color==="red"?" red":"");
-
-  const top=document.createElement("div");
-  top.className="corner";
-  top.innerHTML=card.rank+"<br>"+card.suit;
-
-  const center=document.createElement("div");
-  center.className="suit";
-  center.textContent=card.suit;
-
-  const bottom=document.createElement("div");
-  bottom.className="corner bottom";
-  bottom.innerHTML=card.rank+"<br>"+card.suit;
-
-  el.append(top,center,bottom);
-  return el;
+ const el=document.createElement("div");
+ if(hidden){el.className="card back";return el;}
+ el.className="card"+(card.color==="red"?" red":"");
+ const top=document.createElement("div");
+ top.className="corner";
+ top.innerHTML=card.rank+"<br>"+card.suit;
+ const center=document.createElement("div");
+ center.className="suit";
+ center.textContent=card.suit;
+ const bottom=document.createElement("div");
+ bottom.className="corner bottom";
+ bottom.innerHTML=card.rank+"<br>"+card.suit;
+ el.append(top,center,bottom);
+ return el;
 }
 
 function renderHand(){
-  const dealerEl=document.getElementById("dealerCards");
-  const playerEl=document.getElementById("playerCards");
+ const dealerEl=document.getElementById("dealerCards");
+ const playerEl=document.getElementById("playerCards");
+ dealerEl.replaceChildren();
+ playerEl.replaceChildren();
 
-  dealerEl.replaceChildren();
-  playerEl.replaceChildren();
+ dealerHand.forEach((card,index)=>{
+  dealerEl.appendChild(renderCard(card,hideDealerCard&&index===1));
+ });
+ playerHand.forEach(card=>playerEl.appendChild(renderCard(card)));
 
-  dealerHand.forEach((card,index)=>{
-    const hidden=hideDealerCard && index===1;
-    dealerEl.appendChild(renderCard(card,hidden));
-  });
+ document.getElementById("playerScore").textContent=
+  playerHand.length?handValue(playerHand):"—";
 
-  playerHand.forEach(card=>{
-    playerEl.appendChild(renderCard(card));
-  });
+ document.getElementById("dealerScore").textContent=
+  !dealerHand.length?"—":
+  hideDealerCard&&dealerHand.length>1
+   ?handValue([dealerHand[0]])+" + ?"
+   :handValue(dealerHand);
 
-  document.getElementById("playerScore").textContent=
-    playerHand.length ? handValue(playerHand) : "—";
-
-  if(hideDealerCard && dealerHand.length>1){
-    document.getElementById("dealerScore").textContent=
-      handValue([dealerHand[0]])+" + ?";
-  }else{
-    document.getElementById("dealerScore").textContent=
-      dealerHand.length ? handValue(dealerHand) : "—";
-  }
-
-  updateStats();
+ updateStats();
 }
 
-function startRound(){
-  if(nextRoundTimer){
-    clearTimeout(nextRoundTimer);
-    nextRoundTimer=null;
-  }
+function cancelAutoNext(){
+ if(nextRoundTimer){
+  clearTimeout(nextRoundTimer);
+  nextRoundTimer=null;
+ }
+}
 
-  if(balance<BET){
-    roundActive=false;
-    roundResolved=true;
-    setButtons();
-    setMessage("Saldo habis! Tekan RESET GAME untuk bermain lagi.","lose");
-    document.getElementById("status").textContent=
-      "Permainan berhenti karena saldo tidak cukup.";
-    return;
-  }
+function addBet(amount){
+ if(roundActive)return;
+ cancelAutoNext();
 
-  roundNumber++;
-  currentBet=BET;
-  balance-=currentBet;
+ // Setelah hasil ronde, pemain boleh mengubah taruhan berikutnya.
+ roundResolved=false;
 
-  playerHand=[drawCard(),drawCard()];
-  dealerHand=[drawCard(),drawCard()];
-
-  roundActive=true;
-  roundResolved=false;
-  hideDealerCard=true;
-
+ if(betAmount+amount>balance){
+  setMessage("Saldo tidak cukup untuk menambah chip taruhan.","lose");
   document.getElementById("status").textContent=
-    "Ronde "+roundNumber+" · Taruhan "+formatNumber(currentBet)+" poin";
+   "Saldo tersedia: "+fmt(balance)+" poin.";
+  updateStats();
+  return;
+ }
 
-  setMessage("Ronde baru! Pilih HIT atau STAND.");
+ betAmount+=amount;
+ setMessage("Taruhan saat ini "+fmt(betAmount)+" poin.");
+ document.getElementById("status").textContent=
+  "Tekan DEAL untuk mulai, atau tambahkan chip lagi.";
+ updateStats();
+}
+
+function clearBet(){
+ if(roundActive)return;
+ cancelAutoNext();
+ roundResolved=false;
+ betAmount=0;
+ setMessage("Taruhan dihapus. Pilih chip untuk memasang taruhan.");
+ document.getElementById("status").textContent=
+  "Saldo tersedia: "+fmt(balance)+" poin.";
+ updateStats();
+}
+
+function deal(){
+ if(roundActive||betAmount<=0||betAmount>balance)return;
+ cancelAutoNext();
+
+ if(balance<betAmount){
+  setMessage("Saldo tidak cukup untuk taruhan ini.","lose");
+  return;
+ }
+
+ currentBet=betAmount;
+ balance-=currentBet;
+ roundNumber++;
+ playerHand=[drawCard(),drawCard()];
+ dealerHand=[drawCard(),drawCard()];
+ roundActive=true;
+ roundResolved=false;
+ hideDealerCard=true;
+
+ document.getElementById("status").textContent=
+  "Ronde "+roundNumber+" · Taruhan "+fmt(currentBet)+" poin.";
+ setMessage("Kartu dibagikan. Semoga beruntung!");
+ renderHand();
+ setButtons();
+
+ if(natural(playerHand)&&natural(dealerHand)){
+  hideDealerCard=false;
   renderHand();
-  setButtons();
-
-  if(isNatural(playerHand)){
-    if(isNatural(dealerHand)){
-      hideDealerCard=false;
-      renderHand();
-      finishRound("tie","Blackjack keduanya! Seri.");
-    }else{
-      hideDealerCard=false;
-      renderHand();
-      finishRound("blackjack","BLACKJACK! Kamu menang!");
-    }
-  }else if(isNatural(dealerHand)){
-    hideDealerCard=false;
-    renderHand();
-    finishRound("lose","Dealer mendapat Blackjack. Kamu kalah.");
-  }
+  finishRound("tie","Blackjack keduanya! Seri.");
+ }else if(natural(playerHand)){
+  hideDealerCard=false;
+  renderHand();
+  finishRound("blackjack","BLACKJACK! Kamu menang!");
+ }else if(natural(dealerHand)){
+  hideDealerCard=false;
+  renderHand();
+  finishRound("lose","Dealer mendapat Blackjack. Kamu kalah.");
+ }
 }
 
 function hit(){
-  if(!roundActive || roundResolved) return;
+ if(!roundActive||roundResolved)return;
+ playerHand.push(drawCard());
+ renderHand();
 
-  playerHand.push(drawCard());
+ const total=handValue(playerHand);
+ if(total>21){
+  hideDealerCard=false;
   renderHand();
-
-  const total=handValue(playerHand);
-
-  if(total>21){
-    hideDealerCard=false;
-    renderHand();
-    finishRound("lose","Bust! Nilai kamu lebih dari 21.");
-  }else if(total===21){
-    stand();
-  }else{
-    setMessage("Nilai "+total+". Mau ambil kartu lagi?");
-    setButtons();
-  }
+  finishRound("lose","Bust! Nilai kamu lebih dari 21.");
+ }else if(total===21){
+  stand();
+ }else{
+  setMessage("Nilai kamu "+total+". Ambil kartu lagi atau STAND.");
+  setButtons();
+ }
 }
 
 function stand(){
-  if(!roundActive || roundResolved) return;
+ if(!roundActive||roundResolved)return;
+ hideDealerCard=false;
 
-  hideDealerCard=false;
+ while(handValue(dealerHand)<17)dealerHand.push(drawCard());
+ renderHand();
 
-  while(handValue(dealerHand)<17){
-    dealerHand.push(drawCard());
-  }
-
-  renderHand();
-
-  const playerTotal=handValue(playerHand);
-  const dealerTotal=handValue(dealerHand);
-
-  if(dealerTotal>21){
-    finishRound("win","Dealer bust! Kamu menang.");
-  }else if(playerTotal>dealerTotal){
-    finishRound("win","Kamu menang!");
-  }else if(playerTotal<dealerTotal){
-    finishRound("lose","Dealer menang. Coba ronde berikutnya!");
-  }else{
-    finishRound("tie","Seri! Taruhan dikembalikan.");
-  }
+ const p=handValue(playerHand),d=handValue(dealerHand);
+ if(d>21)finishRound("win","Dealer bust! Kamu menang.");
+ else if(p>d)finishRound("win","Kamu menang!");
+ else if(p<d)finishRound("lose","Dealer menang. Kamu kalah.");
+ else finishRound("tie","Seri! Taruhan dikembalikan.");
 }
 
 function doubleDown(){
-  if(!roundActive || roundResolved) return;
-  if(playerHand.length!==2 || balance<currentBet) return;
+ if(!roundActive||roundResolved||playerHand.length!==2||balance<currentBet)return;
 
-  balance-=currentBet;
-  currentBet*=2;
-  playerHand.push(drawCard());
+ balance-=currentBet;
+ currentBet*=2;
+ playerHand.push(drawCard());
+ renderHand();
+
+ if(handValue(playerHand)>21){
+  hideDealerCard=false;
   renderHand();
-
-  if(handValue(playerHand)>21){
-    hideDealerCard=false;
-    renderHand();
-    finishRound("lose","Double Down: bust! Kamu kalah.");
-  }else{
-    stand();
-  }
+  finishRound("lose","Double Down: bust! Kamu kalah.");
+ }else{
+  stand();
+ }
 }
 
 function finishRound(result,message){
-  if(roundResolved) return;
+ if(roundResolved)return;
+ roundResolved=true;
+ roundActive=false;
+ hideDealerCard=false;
 
-  roundResolved=true;
-  roundActive=false;
-  hideDealerCard=false;
+ if(result==="win"){
+  balance+=currentBet*2;
+  wins++;
+  setMessage(message+" Untung bersih +"+fmt(currentBet)+" poin.","win");
+ }else if(result==="blackjack"){
+  balance+=currentBet*2.5;
+  wins++;
+  setMessage(message+" Pembayaran 3:2!","win");
+ }else if(result==="lose"){
+  losses++;
+  setMessage(message+" Taruhan "+fmt(currentBet)+" poin hilang.","lose");
+ }else{
+  ties++;
+  balance+=currentBet;
+  setMessage(message+" Taruhan dikembalikan.","tie");
+ }
 
-  if(result==="win"){
-    balance+=currentBet*2;
-    wins++;
-    setMessage(message+" +"+formatNumber(currentBet)+" poin bersih.","win");
-  }else if(result==="blackjack"){
-    balance+=currentBet*2.5;
-    wins++;
-    setMessage(message+" Pembayaran Blackjack 3:2!","win");
-  }else if(result==="lose"){
-    losses++;
-    setMessage(message+" Taruhan ronde ini hilang.","lose");
-  }else{
-    balance+=currentBet;
-    ties++;
-    setMessage(message+" Taruhan dikembalikan.","tie");
-  }
+ renderHand();
+ setButtons();
 
-  renderHand();
-  setButtons();
-
-  if(balance>=BET){
-    document.getElementById("status").textContent=
-      "Ronde selesai. Ronde berikutnya dimulai otomatis...";
-    nextRoundTimer=setTimeout(()=>{
-      nextRoundTimer=null;
-      startRound();
-    },AUTO_NEXT_DELAY);
-  }else{
-    document.getElementById("status").textContent=
-      "Saldo tidak cukup untuk taruhan berikutnya.";
-  }
+ if(balance>=betAmount&&betAmount>0){
+  document.getElementById("status").textContent=
+   "Ronde selesai. Ronde baru otomatis dimulai dalam beberapa detik. Tambah chip jika ingin mengubah taruhan.";
+  nextRoundTimer=setTimeout(()=>{
+   nextRoundTimer=null;
+   if(!roundActive&&roundResolved&&betAmount>0&&betAmount<=balance){
+    roundResolved=false;
+    deal();
+   }
+  },AUTO_NEXT_DELAY);
+ }else{
+  document.getElementById("status").textContent=
+   "Saldo tidak cukup untuk taruhan berikutnya. Pilih taruhan lebih kecil.";
+  // Buka kontrol taruhan agar pemain bisa menyesuaikan nominal.
+  roundResolved=false;
+  updateStats();
+ }
 }
 
 function resetGame(){
-  if(nextRoundTimer){
-    clearTimeout(nextRoundTimer);
-    nextRoundTimer=null;
-  }
-
-  balance=STARTING_BALANCE;
-  wins=0;
-  losses=0;
-  ties=0;
-  roundNumber=0;
-  deck=makeDeck();
-  playerHand=[];
-  dealerHand=[];
-  currentBet=0;
-  roundActive=false;
-  roundResolved=false;
-  hideDealerCard=true;
-
-  renderHand();
-  setMessage("Game direset. Memulai permainan...");
-  document.getElementById("status").textContent=
-    "Saldo awal "+formatNumber(STARTING_BALANCE)+" poin.";
-
-  startRound();
+ cancelAutoNext();
+ balance=STARTING_BALANCE;
+ wins=0;losses=0;ties=0;roundNumber=0;
+ betAmount=10;currentBet=0;
+ deck=makeDeck();
+ playerHand=[];dealerHand=[];
+ roundActive=false;roundResolved=false;hideDealerCard=true;
+ renderHand();
+ setMessage("Game direset. Pilih taruhan dan tekan DEAL.");
+ document.getElementById("status").textContent=
+  "Saldo awal "+fmt(STARTING_BALANCE)+" poin.";
+ setButtons();
 }
 
 deck=makeDeck();
-startRound();
+renderHand();
+setMessage("Pilih chip taruhan, lalu tekan DEAL.");
+document.getElementById("status").textContent=
+ "Saldo awal 1.000 poin. Taruhan awal 10 poin.";
+setButtons();
 </script>
 </body>
 </html>
