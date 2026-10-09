@@ -3,724 +3,335 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#06120e">
-<title>NEON POKER 3D</title>
-
+<title>NEON BLACKJACK 3D</title>
 <style>
-:root {
-  --green: #063d2d;
-  --felt: #08744e;
-  --neon: #5affd0;
-  --gold: #e8c77a;
-  --dark: #06120e;
-  --text: #effff8;
-  --muted: #9dbeb1;
-}
-* { box-sizing: border-box; }
-body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-  background:
-    radial-gradient(ellipse at 50% 0%, #174d3a 0%, transparent 48%),
-    linear-gradient(145deg, #06140f, #020806 80%);
-}
-button { font: inherit; cursor: pointer; }
-button:focus-visible { outline: 2px solid var(--neon); outline-offset: 4px; }
-
-.app { width: min(1080px, 100%); margin: auto; padding: 22px 16px 30px; }
-
-header {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; margin-bottom: 20px;
-}
-.brand { display: flex; align-items: center; gap: 12px; }
-.logo {
-  width: 49px; height: 49px; display: grid; place-items: center;
-  border: 1px solid var(--neon); border-radius: 14px;
-  color: var(--neon); font-size: 29px;
-  box-shadow: 0 0 25px #5affd026;
-}
-h1 { margin: 0; font-size: clamp(20px, 4vw, 30px); letter-spacing: .12em; }
-.brand p { margin: 5px 0 0; color: var(--muted); font-size: 10px; letter-spacing: .18em; }
-
-.btn, .primary, .secondary {
-  border-radius: 11px; padding: 12px 17px; font-weight: 800;
-}
-.btn, .secondary {
-  color: var(--text); background: #10251c;
-  border: 1px solid #5affd044;
-}
-.btn:hover, .secondary:hover { border-color: var(--neon); }
-.primary {
-  color: #052117; border: 0;
-  background: linear-gradient(110deg, #5affd0, #b8ffb8);
-  box-shadow: 0 5px 0 #16815b, 0 9px 22px #00d99b1c;
-}
-.primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
-.primary:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-
-.stats {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  gap: 10px; margin-bottom: 16px;
-}
-.stat {
-  padding: 13px; border: 1px solid #5affd021; border-radius: 14px;
-  background: linear-gradient(145deg, #12281e, #09140f);
-}
-.stat-label { color: var(--muted); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
-.stat-value { margin-top: 5px; font-size: clamp(21px, 4vw, 30px); font-weight: 900; }
-.cyan { color: var(--neon); }
-.pink { color: #ff8ad5; }
-
-.table-shell {
-  padding: 10px; border-radius: 28px;
-  background: linear-gradient(145deg, #c4a365, #263c31 28%, #08130e 72%);
-  box-shadow: 0 25px 65px #0009, inset 0 1px #ffffff35;
-  perspective: 1200px;
-}
-.table {
-  position: relative; overflow: hidden;
-  min-height: 450px; padding: 23px clamp(12px, 4vw, 38px);
-  border: 4px solid #c1a66b; border-radius: 20px;
-  background:
-    radial-gradient(ellipse at 50% 35%, #13845b, #075338 55%, #033323 100%);
-  box-shadow: inset 0 0 0 5px #04281c, inset 0 0 70px #00180f99,
-    0 12px 0 #17261c;
-  transform: rotateX(1deg);
-}
-.table:before {
-  content: ""; position: absolute; inset: 13px;
-  border: 1px solid #e5d4a640; border-radius: 13px; pointer-events: none;
-}
-.table-content { position: relative; z-index: 1; }
-.dealer {
-  display: flex; justify-content: center; align-items: center; gap: 9px;
-  width: fit-content; max-width: 100%; margin: 0 auto 20px;
-  padding: 9px 15px; border-radius: 99px;
-  color: #d9fff0; background: #031d15d9;
-  border: 1px solid #6dffc355; font-size: 10px; letter-spacing: .13em;
-}
-.pulse {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--neon);
-  box-shadow: 0 0 12px var(--neon); animation: pulse 1.5s infinite;
-}
-@keyframes pulse { 50% { opacity: .35; } }
-
-.playing-area {
-  display: grid; grid-template-columns: 1fr minmax(70px, 120px) 1fr;
-  gap: 10px; align-items: center;
-}
-.side-label {
-  text-align: center; color: #e0fff1;
-  font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
-}
-.side-label small {
-  display: block; margin-top: 5px; color: #a8e8ce;
-  font-size: 11px; letter-spacing: 0; text-transform: none;
-}
-.vs { text-align: center; color: #c5e8d6; font-size: 10px; letter-spacing: .15em; }
-
-.card-slot {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 242px; perspective: 1200px;
-}
-.card {
-  position: relative; width: clamp(125px, 17vw, 160px);
-  height: clamp(180px, 24vw, 224px);
-  transform-style: preserve-3d;
-  transition: transform .8s cubic-bezier(.2,.8,.2,1);
-  filter: drop-shadow(0 15px 11px #00150fc0);
-}
-.card.flipped { transform: rotateY(180deg) rotateZ(-1deg); }
-.card-face {
-  position: absolute; inset: 0; overflow: hidden;
-  border-radius: 11px; backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* BACK KARTU POKER */
-.card-back {
-  display: grid; place-items: center;
-  border: 5px solid #f9f4e7;
-  background: #172a47;
-  box-shadow: inset 0 0 0 2px #d9cba7, inset 0 0 0 6px #14233b;
-}
-.card-back:before {
-  content: ""; position: absolute; inset: 10px;
-  border: 2px solid #e6c779;
-  background:
-    repeating-linear-gradient(45deg, #c7a65b22 0 2px, transparent 2px 6px),
-    repeating-linear-gradient(-45deg, #5affd01c 0 2px, transparent 2px 6px);
-}
-.card-back:after {
-  content: "♠"; position: absolute; display: grid; place-items: center;
-  width: 66px; height: 66px; border-radius: 50%;
-  color: #f4d68a; background: #14233b;
-  border: 2px solid #e6c779; font-size: 43px;
-  box-shadow: 0 0 0 5px #14233b, 0 0 0 6px #e6c779;
-}
-.back-text {
-  position: absolute; bottom: 17px; color: #e8d59f;
-  font-size: 7px; letter-spacing: .18em; z-index: 2;
-}
-
-/* MUKA KARTU POKER STANDAR */
-.card-front {
-  transform: rotateY(180deg);
-  color: #161616;
-  border: 1px solid #d4d0c4;
-  background: linear-gradient(135deg, #fffef8, #f8f4e9);
-  box-shadow: inset 0 0 0 2px #fff;
-}
-.card-front.red { color: #c52336; }
-.card-front:before {
-  content: ""; position: absolute; inset: 5px;
-  border: 1px solid #ded8c8; border-radius: 7px; pointer-events: none;
-}
-.corner {
-  position: absolute; top: 8px; left: 9px; z-index: 4;
-  font-family: Georgia, serif; font-weight: bold;
-  text-align: center; font-size: 25px; line-height: .92;
-}
-.corner .mini-suit { display: block; font-size: 19px; margin-top: 3px; }
-.corner.bottom { top: auto; left: auto; right: 9px; bottom: 8px; transform: rotate(180deg); }
-
-.pip-area {
-  position: absolute; inset: 35px 20px;
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(5, 1fr);
-  align-items: center; justify-items: center;
-}
-.pip {
-  font-family: Georgia, serif; font-size: clamp(20px, 3vw, 31px);
-  line-height: 1; text-shadow: 0 .5px #0002;
-}
-.pip.flip { transform: rotate(180deg); }
-.pip.ace { font-size: 73px; }
-.pip.hide { visibility: hidden; }
-
-.face-art {
-  position: absolute; inset: 34px 19px;
-  border: 3px double #c2a35e; border-radius: 5px;
-  background: linear-gradient(135deg, #f8e7b8, #fffaf0 48%, #e5c98b);
-  display: grid; place-items: center; overflow: hidden;
-}
-.face-art:before {
-  content: ""; position: absolute; inset: 5px;
-  border: 1px solid currentColor; opacity: .35;
-}
-.face-art:after {
-  content: ""; position: absolute; width: 90%; height: 1px;
-  background: #9a7838; box-shadow: 0 -31px #9a783855, 0 31px #9a783855;
-}
-.face-figure {
-  position: relative; z-index: 1; width: 70%; height: 80%;
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 3px;
-}
-.face-crown { font-size: 19px; line-height: 1; }
-.face-head {
-  width: 27px; height: 30px; border-radius: 45% 45% 42% 42%;
-  background: #edc89b; border: 2px solid currentColor; position: relative;
-}
-.face-head:before {
-  content: ""; position: absolute; left: -5px; top: -5px;
-  width: 32px; height: 12px; border-radius: 70% 70% 15% 15%;
-  background: currentColor;
-}
-.face-body {
-  width: 47px; height: 47px; margin-top: -2px;
-  border: 2px solid currentColor; border-radius: 7px 7px 2px 2px;
-  background: repeating-linear-gradient(45deg, transparent 0 5px, #c6a24d55 5px 7px);
-  display: grid; place-items: center; font-size: 23px;
-}
-.face-initial {
-  position: absolute; bottom: 2px; right: 3px;
-  font-family: Georgia, serif; font-size: 12px; font-weight: bold;
-}
-.center-ace { position: absolute; inset: 0; display: grid; place-items: center; }
-.center-ace span { font-size: 74px; }
-.card-watermark {
-  position: absolute; bottom: 12px; left: 0; right: 0;
-  text-align: center; font-size: 6px; letter-spacing: .2em; opacity: .35;
-}
-
-.message {
-  min-height: 27px; margin: 12px 0 4px;
-  text-align: center; font-size: 14px; font-weight: 800;
-}
-.message.good { color: #8dffd1; }
-.message.bad { color: #ffb1bd; }
-.prompt { text-align: center; color: #c3e8d6; font-size: 12px; margin: 0 0 14px; }
-
-.guess-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.guess-btn {
-  min-height: 69px; padding: 11px 6px; border-radius: 12px;
-  color: white; background: linear-gradient(145deg, #123b2a, #071b12);
-  border: 1px solid #c6ffe02b;
-  box-shadow: 0 5px 0 #032217, 0 8px 12px #00100e66;
-  transition: .18s;
-}
-.guess-btn:hover:not(:disabled) {
-  transform: translateY(-3px); border-color: var(--neon);
-  box-shadow: 0 8px 0 #032217, 0 0 18px #5affd029;
-}
-.guess-btn:disabled { opacity: .5; cursor: default; }
-.guess-btn .sym { display: block; font-size: 27px; line-height: 1.1; margin-bottom: 4px; }
-.guess-btn .name { color: #b8d9ca; font-size: 10px; letter-spacing: .07em; }
-.red-suit .sym { color: #ff657e; }
-.black-suit .sym { color: #f0fff7; }
-
-.controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 17px; }
-
-.bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
-.info-panel {
-  padding: 15px; border-radius: 14px;
-  border: 1px solid #5affd01f;
-  background: linear-gradient(145deg, #10271d, #07130e);
-}
-.panel-title { color: var(--neon); font-size: 10px; letter-spacing: .15em; margin-bottom: 10px; font-weight: 900; }
-.info-panel p { margin: 0; color: #b0c9bc; font-size: 12px; line-height: 1.7; }
-.history { display: flex; flex-wrap: wrap; gap: 6px; min-height: 24px; }
-.history-chip { padding: 5px 8px; border-radius: 7px; background: #183126; border: 1px solid #2c4d3b; font-size: 12px; }
-.history-chip.win { color: #8dffd1; border-color: #439d75; }
-.history-chip.loss { color: #ff9eae; border-color: #8e4053; }
-footer { text-align: center; color: #779487; font-size: 10px; letter-spacing: .12em; margin-top: 20px; }
-.toast {
-  position: fixed; z-index: 10; left: 50%; bottom: 20px;
-  transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
-  padding: 12px 17px; border-radius: 12px; max-width: calc(100% - 24px);
-  color: white; background: #0b2117; border: 1px solid var(--neon);
-  transition: .25s; text-align: center; font-size: 13px;
-}
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-@media (max-width: 620px) {
-  .app { padding: 14px 10px 22px; }
-  .logo { width: 41px; height: 41px; }
-  .brand p { font-size: 8px; letter-spacing: .1em; }
-  .header-actions .btn-text { display: none; }
-  .stats { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .table-shell { padding: 6px; border-radius: 19px; }
-  .table { padding: 16px 9px; transform: none; }
-  .playing-area { grid-template-columns: 1fr 1fr; gap: 5px; }
-  .playing-area .vs { display: none; }
-  .side-label { font-size: 10px; }
-  .card-slot { grid-row: 2; min-height: 185px; }
-  .card { width: 112px; height: 160px; }
-  .corner { top: 7px; left: 7px; font-size: 21px; }
-  .corner .mini-suit { font-size: 16px; }
-  .corner.bottom { top: auto; left: auto; right: 7px; bottom: 7px; }
-  .pip-area { inset: 28px 14px; }
-  .pip { font-size: 22px; }
-  .pip.ace { font-size: 57px; }
-  .face-art { inset: 29px 14px; }
-  .face-head { transform: scale(.85); }
-  .face-body { transform: scale(.85); }
-  .guess-grid { gap: 7px; }
-  .guess-btn { min-height: 60px; }
-  .bottom-grid { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+:root{--bg:#06120e;--green:#08744e;--neon:#5affd0;--gold:#e8c77a;--text:#effff8;--muted:#a5c3b5}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#174d3a,transparent 50%),linear-gradient(145deg,#06140f,#020806);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--neon);outline-offset:3px}
+.app{max-width:1050px;margin:auto;padding:20px 14px 30px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:47px;height:47px;display:grid;place-items:center;border:1px solid var(--neon);border-radius:13px;color:var(--neon);font-size:29px;box-shadow:0 0 25px #5affd022}
+h1{font-size:clamp(19px,4vw,29px);letter-spacing:.1em;margin:0}
+.brand p{font-size:9px;letter-spacing:.16em;color:var(--muted);margin:5px 0 0}
+.cyan{color:var(--neon)}
+button{border-radius:10px;padding:11px 15px;font-weight:800}
+.secondary{background:#10251c;color:white;border:1px solid #5affd044}
+.primary{color:#052117;background:linear-gradient(110deg,#5affd0,#b8ffb8);border:0;box-shadow:0 4px 0 #16815b}
+.primary:disabled{opacity:.35;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:15px}
+.stat{padding:12px;border:1px solid #5affd021;border-radius:13px;background:linear-gradient(145deg,#12281e,#09140f)}
+.stat-label{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.stat-value{font-size:clamp(20px,4vw,28px);font-weight:900;margin-top:5px}
+.table-shell{padding:9px;border-radius:26px;background:linear-gradient(145deg,#c4a365,#263c31 28%,#08130e 72%);box-shadow:0 25px 60px #0009}
+.table{position:relative;overflow:hidden;padding:22px clamp(12px,4vw,35px);min-height:480px;border:4px solid #c1a66b;border-radius:19px;background:radial-gradient(ellipse at 50% 30%,#13845b,#075338 55%,#033323);box-shadow:inset 0 0 0 5px #04281c,inset 0 0 65px #00180f99}
+.table:before{content:"";position:absolute;inset:12px;border:1px solid #e5d4a640;border-radius:12px;pointer-events:none}
+.content{position:relative;z-index:1}
+.badge{width:fit-content;max-width:100%;margin:0 auto 18px;padding:9px 15px;border-radius:30px;color:#d9fff0;background:#031d15d9;border:1px solid #6dffc355;font-size:10px;letter-spacing:.14em;text-align:center}
+.status-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 12px var(--neon);margin-right:8px}
+.hand{margin:0 auto 15px;text-align:center}
+.hand-title{font-size:11px;letter-spacing:.13em;color:#dfffee;margin-bottom:10px;text-transform:uppercase}
+.hand-title small{display:inline-block;margin-left:8px;font-size:13px;color:var(--gold);letter-spacing:0}
+.cards{min-height:150px;display:flex;align-items:center;justify-content:center;gap:clamp(4px,1.7vw,15px);flex-wrap:wrap;padding:3px}
+.card{position:relative;width:clamp(69px,11vw,102px);height:clamp(100px,15vw,146px);border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#fffef8,#f5f0e4);color:#151515;border:1px solid #d3cebf;box-shadow:0 10px 12px #00150f99,inset 0 0 0 2px white;animation:deal .35s ease-out both;transform-style:preserve-3d}
+@keyframes deal{from{opacity:0;transform:translateY(-20px) rotateY(60deg) scale(.85)}to{opacity:1;transform:translateY(0) rotateY(0) scale(1)}}
+.card:before{content:"";position:absolute;inset:4px;border:1px solid #ded8c8;border-radius:5px;pointer-events:none}
+.card.red{color:#c52336}
+.corner{position:absolute;top:6px;left:7px;z-index:2;font-family:Georgia,serif;font-size:20px;font-weight:bold;line-height:.85;text-align:center}
+.corner .suit{display:block;font-size:15px;margin-top:3px}
+.corner.bottom{top:auto;left:auto;right:7px;bottom:6px;transform:rotate(180deg)}
+.pips{position:absolute;inset:27px 13px;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(5,1fr);align-items:center;justify-items:center}
+.pip{font-family:Georgia,serif;font-size:clamp(16px,2.5vw,23px);line-height:1}
+.pip.flip{transform:rotate(180deg)}
+.ace{position:absolute;inset:0;display:grid;place-items:center;font-size:59px}
+.face-art{position:absolute;inset:26px 12px;border:3px double #c2a35e;border-radius:4px;background:linear-gradient(135deg,#f8e7b8,#fffaf0 48%,#e5c98b);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px}
+.face-art:before{content:"";position:absolute;inset:4px;border:1px solid #9a7838;opacity:.45}
+.face-crown{font-size:19px}
+.face-head{width:22px;height:24px;border-radius:45%;background:#edc89b;border:2px solid currentColor;position:relative}
+.face-head:before{content:"";position:absolute;top:-5px;left:-4px;width:26px;height:10px;border-radius:70% 70% 15% 15%;background:currentColor}
+.face-body{width:35px;height:36px;border:2px solid currentColor;border-radius:6px;background:repeating-linear-gradient(45deg,transparent 0 4px,#c6a24d55 4px 6px);display:grid;place-items:center;font-size:19px}
+.back{background:#172a47;border:5px solid #f9f4e7;box-shadow:inset 0 0 0 2px #d9cba7,inset 0 0 0 6px #14233b}
+.back:before{inset:9px;border:2px solid #e6c779;background:repeating-linear-gradient(45deg,#c7a65b22 0 2px,transparent 2px 6px),repeating-linear-gradient(-45deg,#5affd01c 0 2px,transparent 2px 6px)}
+.back:after{content:"♠";position:absolute;inset:0;display:grid;place-items:center;color:#f4d68a;font-size:42px}
+.score-label{text-align:center;font-size:12px;color:#c3e8d6;margin:6px 0 12px}
+.score-label strong{color:var(--gold);font-size:19px;margin-left:5px}
+.divider{height:1px;background:#e0ffe51a;margin:14px 0}
+.message{min-height:24px;text-align:center;font-size:14px;font-weight:bold;margin:8px 0}
+.good{color:#8dffd1}.bad{color:#ffabb9}
+.controls{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin-top:13px}
+.rules{margin-top:17px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel{padding:14px;border-radius:13px;border:1px solid #5affd01f;background:linear-gradient(145deg,#10271d,#07130e)}
+.panel h3{font-size:10px;letter-spacing:.15em;color:var(--neon);margin:0 0 9px}
+.panel p{font-size:12px;color:#b0c9bc;line-height:1.7;margin:0}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:11px;padding:5px 8px;background:#183126;border:1px solid #2c4d3b;border-radius:6px}
+footer{text-align:center;color:#779487;font-size:10px;letter-spacing:.12em;margin-top:20px}
+@media(max-width:550px){
+.app{padding:13px 9px 23px}.logo{width:39px;height:39px}.brand p{font-size:8px}.stats{gap:6px}.stat{padding:10px}
+.table-shell{padding:5px;border-radius:18px}.table{padding:16px 8px;min-height:440px}
+.cards{min-height:117px;gap:5px}.card{width:clamp(59px,16vw,78px);height:clamp(87px,23vw,112px)}
+.corner{font-size:17px;top:5px;left:5px}.corner .suit{font-size:13px}.corner.bottom{top:auto;left:auto;right:5px;bottom:5px}
+.pips{inset:23px 10px}.pip{font-size:16px}.ace{font-size:47px}
+.face-art{inset:23px 9px}.face-head{transform:scale(.8)}.face-body{transform:scale(.8)}
+.rules{grid-template-columns:1fr}.controls button{padding:11px 12px;font-size:12px}
 }
 </style>
 </head>
-
 <body>
 <div class="app">
-  <header>
-    <div class="brand">
-      <div class="logo">♠</div>
-      <div>
-        <h1>NEON <span class="cyan">POKER 3D</span></h1>
-        <p>CLASSIC PLAYING CARDS • 3D TABLE</p>
-      </div>
-    </div>
-    <div class="header-actions">
-      <button class="btn" id="soundBtn">🔊 <span class="btn-text">Suara ON</span></button>
-    </div>
-  </header>
+<header>
+  <div class="brand">
+    <div class="logo">♠</div>
+    <div><h1>NEON <span class="cyan">BLACKJACK</span></h1><p>3D CASINO TABLE • CLASSIC 21</p></div>
+  </div>
+  <button class="secondary" id="soundBtn">🔊 Suara</button>
+</header>
 
-  <section class="stats">
-    <div class="stat"><div class="stat-label">Skor</div><div class="stat-value cyan" id="score">0</div></div>
-    <div class="stat"><div class="stat-label">Combo</div><div class="stat-value pink" id="combo">×0</div></div>
-    <div class="stat"><div class="stat-label">Akurasi</div><div class="stat-value" id="accuracy">—</div></div>
-    <div class="stat"><div class="stat-label">Ronde</div><div class="stat-value" id="round">0 <span style="font-size:13px;color:#9dbeb1">/ 10</span></div></div>
-  </section>
+<section class="stats">
+  <div class="stat"><div class="stat-label">Poin virtual</div><div class="stat-value cyan" id="points">1000</div></div>
+  <div class="stat"><div class="stat-label">Menang</div><div class="stat-value" id="wins">0</div></div>
+  <div class="stat"><div class="stat-label">Kalah</div><div class="stat-value" id="losses">0</div></div>
+  <div class="stat"><div class="stat-label">Seri</div><div class="stat-value" id="ties">0</div></div>
+</section>
 
-  <main class="table-shell">
-    <section class="table">
-      <div class="table-content">
-        <div class="dealer">
-          <span class="pulse"></span><span>DEALER</span>
-          <span style="opacity:.5">•</span><span id="statusText">MENUNGGU PEMAIN</span>
-        </div>
+<main class="table-shell"><section class="table"><div class="content">
+  <div class="badge"><span class="status-dot"></span><span id="status">DEALER SIAP • BLACKJACK 21</span></div>
 
-        <div class="playing-area">
-          <div class="side-label">Kartu acuan<small>Reference card</small></div>
-          <div class="vs">♠ &nbsp; POKER &nbsp; ♥</div>
-          <div class="side-label">Kartu target<small id="targetCaption">Belum dibuka</small></div>
+  <div class="hand">
+    <div class="hand-title">Dealer <small id="dealerScore">—</small></div>
+    <div class="cards" id="dealerCards"></div>
+  </div>
 
-          <div class="card-slot">
-            <div class="card flipped" id="referenceCard" aria-label="Kartu acuan">
-              <div class="card-face card-back"><span class="back-text">POKER CLUB</span></div>
-              <div class="card-face card-front" id="referenceFace"></div>
-            </div>
-          </div>
+  <div class="divider"></div>
 
-          <div class="card-slot">
-            <div class="card" id="targetCard" aria-label="Kartu target tertutup">
-              <div class="card-face card-back"><span class="back-text">POKER CLUB</span></div>
-              <div class="card-face card-front" id="targetFace"></div>
-            </div>
-          </div>
-        </div>
+  <div class="hand">
+    <div class="hand-title">Kartu kamu <small id="playerScore">—</small></div>
+    <div class="cards" id="playerCards"></div>
+  </div>
 
-        <div class="message" id="message" aria-live="polite">Siap menguji instingmu?</div>
-        <p class="prompt" id="prompt">Tekan MULAI untuk membagikan kartu pertama.</p>
+  <div class="message" id="message" aria-live="polite">Selamat datang di meja Blackjack.</div>
+  <div class="score-label">Nilai target <strong>21</strong></div>
 
-        <div class="guess-grid" id="guessGrid">
-          <button class="guess-btn black-suit" data-suit="♠" disabled><span class="sym">♠</span><span class="name">SEKOP</span></button>
-          <button class="guess-btn red-suit" data-suit="♥" disabled><span class="sym">♥</span><span class="name">HATI</span></button>
-          <button class="guess-btn red-suit" data-suit="♦" disabled><span class="sym">♦</span><span class="name">WAJIK</span></button>
-          <button class="guess-btn black-suit" data-suit="♣" disabled><span class="sym">♣</span><span class="name">KERITING</span></button>
-        </div>
+  <div class="controls">
+    <button class="primary" id="dealBtn">▶ BAGIKAN KARTU</button>
+    <button class="secondary" id="hitBtn" disabled>＋ HIT</button>
+    <button class="secondary" id="standBtn" disabled>✓ STAND</button>
+    <button class="secondary" id="doubleBtn" disabled>× DOUBLE</button>
+    <button class="secondary" id="resetBtn">↻ RESET</button>
+  </div>
+</div></section></main>
 
-        <div class="controls">
-          <button class="primary" id="startBtn">▶ MULAI</button>
-          <button class="secondary" id="restartBtn">↻ ULANGI</button>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <section class="bottom-grid">
-    <div class="info-panel">
-      <div class="panel-title">◈ RIWAYAT TEBAKAN</div>
-      <div class="history" id="history"><span style="font-size:12px;color:#9dbeb1">Belum ada ronde.</span></div>
-    </div>
-    <div class="info-panel">
-      <div class="panel-title">ⓘ CARA BERMAIN</div>
-      <p>Tebak simbol kartu target: sekop, hati, wajik, atau keriting. Tebakan benar mendapat <strong>+100 poin</strong>. Combo berturut-turut memberi bonus. Selesaikan 10 ronde untuk melihat hasil akhir. Poin virtual saja, tanpa taruhan uang sungguhan.</p>
-    </div>
-  </section>
-
-  <footer>NEON POKER 3D • CLASSIC CARDS • VIRTUAL POINTS ONLY</footer>
+<section class="rules">
+  <div class="panel">
+    <h3>♠ CARA BERMAIN</h3>
+    <p>Tujuanmu mendapatkan nilai kartu sedekat mungkin dengan 21 tanpa melewatinya. HIT mengambil kartu tambahan. STAND menghentikan giliranmu dan dealer akan bermain. DOUBLE menggandakan poin ronde dengan mengambil tepat satu kartu tambahan.</p>
+  </div>
+  <div class="panel">
+    <h3>♦ RIWAYAT PERMAINAN</h3>
+    <p>Semua poin bersifat virtual, tanpa uang sungguhan.</p>
+    <div class="history" id="history"><span style="color:#9dbeb1;font-size:11px">Belum ada ronde.</span></div>
+  </div>
+</section>
+<footer>NEON BLACKJACK 3D • PLAY RESPONSIBLY • VIRTUAL POINTS ONLY</footer>
 </div>
-<div class="toast" id="toast" role="status"></div>
 
 <script>
 (() => {
-  'use strict';
+'use strict';
 
-  const SUITS = [
-    { symbol: '♠', name: 'Sekop', color: 'black' },
-    { symbol: '♥', name: 'Hati', color: 'red' },
-    { symbol: '♦', name: 'Wajik', color: 'red' },
-    { symbol: '♣', name: 'Keriting', color: 'black' }
-  ];
-  const RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
-  const $ = id => document.getElementById(id);
+const suits=[
+ {symbol:'♠',name:'Sekop',red:false},
+ {symbol:'♥',name:'Hati',red:true},
+ {symbol:'♦',name:'Wajik',red:true},
+ {symbol:'♣',name:'Keriting',red:false}
+];
+const ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+const $=id=>document.getElementById(id);
+let points=1000,wins=0,losses=0,ties=0;
+let player=[],dealer=[],deck=[];
+let roundActive=false,hiddenDealer=false,soundOn=true,doubled=false;
+let audio=null;
 
-  let score = 0, combo = 0, round = 0, correct = 0, answered = 0;
-  let soundOn = true, active = false, locked = true;
-  let deck = [], reference = null, target = null, audioCtx = null;
-
-  const scoreEl = $('score');
-  const comboEl = $('combo');
-  const accuracyEl = $('accuracy');
-  const roundEl = $('round');
-  const messageEl = $('message');
-  const promptEl = $('prompt');
-  const statusEl = $('statusText');
-  const startBtn = $('startBtn');
-  const targetCard = $('targetCard');
-  const referenceCard = $('referenceCard');
-  const suitButtons = [...document.querySelectorAll('[data-suit]')];
-
-  function makeDeck() {
-    const cards = [];
-    for (const rank of RANKS) {
-      for (const suit of SUITS) cards.push({ rank, suit });
-    }
-    for (let i = cards.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    return cards;
+function makeDeck(){
+ const d=[];
+ for(let n=0;n<6;n++)for(const rank of ranks)for(const suit of suits)d.push({rank,suit});
+ for(let i=d.length-1;i>0;i--){
+  const j=Math.floor(Math.random()*(i+1));
+  [d[i],d[j]]=[d[j],d[i]];
+ }
+ return d;
+}
+function draw(){if(!deck.length)deck=makeDeck();return deck.pop()}
+function cardValue(c){if(c.rank==='A')return 11;if(['J','Q','K'].includes(c.rank))return 10;return Number(c.rank)}
+function total(hand){
+ let sum=hand.reduce((s,c)=>s+cardValue(c),0),aces=hand.filter(c=>c.rank==='A').length;
+ while(sum>21&&aces>0){sum-=10;aces--}
+ return sum;
+}
+function softAce(hand){
+ let sum=hand.reduce((s,c)=>s+cardValue(c),0);
+ let aces=hand.filter(c=>c.rank==='A').length;
+ while(sum>21&&aces>0){sum-=10;aces--}
+ return hand.some(c=>c.rank==='A')&&sum<=21&&hand.reduce((s,c)=>s+cardValue(c),0)===sum;
+}
+function cardFace(c){
+ let content='';
+ if(c.rank==='A'){
+  content=`<div class="ace">${c.suit.symbol}</div>`;
+ }else if(['J','Q','K'].includes(c.rank)){
+  const glyph=c.rank==='J'?'⚔':c.rank==='Q'?'✿':'♜';
+  const crown=c.rank==='J'?'♟':c.rank==='Q'?'♛':'♚';
+  content=`<div class="face-art"><div class="face-crown">${crown}</div><div class="face-head"></div><div class="face-body">${glyph}</div></div>`;
+ }else{
+  const n=Number(c.rank);
+  const positions={
+   2:[1,13],3:[1,7,13],4:[0,2,12,14],5:[0,2,7,12,14],
+   6:[0,2,5,9,12,14],7:[0,2,5,7,9,12,14],
+   8:[0,2,4,5,9,10,12,14],9:[0,2,3,5,7,9,11,12,14],
+   10:[0,2,3,5,6,8,9,11,12,14]
+  }[n]||[];
+  content='<div class="pips">'+Array.from({length:15},(_,i)=>`<span class="pip ${positions.includes(i)?'':'invisible'} ${i>=8?'flip':''}">${c.suit.symbol}</span>`).join('')+'</div>';
+ }
+ return `<div class="corner">${c.rank}<span class="suit">${c.suit.symbol}</span></div>${content}<div class="corner bottom">${c.rank}<span class="suit">${c.suit.symbol}</span></div>`;
+}
+function renderHand(el,hand,hideHole=false){
+ el.innerHTML='';
+ hand.forEach((c,i)=>{
+  const div=document.createElement('div');
+  div.className='card'+(c.suit.red?' red':'');
+  if(hideHole&&i===1){
+   div.className='card back';
+   div.setAttribute('aria-label','Kartu dealer tertutup');
+  }else{
+   div.innerHTML=cardFace(c);
+   div.setAttribute('aria-label',`${c.rank} ${c.suit.name}`);
   }
-
-  function drawCard() {
-    if (!deck.length) deck = makeDeck();
-    return deck.pop();
-  }
-
-  function pipMarkup(card) {
-    const rank = card.rank;
-    const suit = card.suit.symbol;
-
-    if (rank === 'A') {
-      return `<div class="center-ace"><span>${suit}</span></div>`;
-    }
-
-    if (['J','Q','K'].includes(rank)) {
-      const icon = rank === 'J' ? '⚔' : rank === 'Q' ? '✿' : '♜';
-      const label = rank === 'J' ? 'JACK' : rank === 'Q' ? 'QUEEN' : 'KING';
-      return `
-        <div class="face-art">
-          <div class="face-figure">
-            <div class="face-crown">${rank === 'J' ? '♟' : rank === 'Q' ? '♛' : '♚'}</div>
-            <div class="face-head"></div>
-            <div class="face-body">${icon}</div>
-          </div>
-          <span class="face-initial">${label}</span>
-        </div>
-        <div class="face-art" style="inset:50% 19px 34px;transform:rotate(180deg);opacity:.45">
-          <div class="face-figure">
-            <div class="face-crown">${rank === 'J' ? '♟' : rank === 'Q' ? '♛' : '♚'}</div>
-            <div class="face-head"></div>
-            <div class="face-body">${icon}</div>
-          </div>
-        </div>`;
-    }
-
-    const count = Number(rank);
-    const positions = {
-      2: [1,13],
-      3: [1,7,13],
-      4: [0,2,12,14],
-      5: [0,2,7,12,14],
-      6: [0,2,5,9,12,14],
-      7: [0,2,5,7,9,12,14],
-      8: [0,2,4,5,9,10,12,14],
-      9: [0,2,3,5,7,9,11,12,14],
-      10:[0,2,3,5,6,8,9,11,12,14]
-    }[count] || [];
-
-    let html = '<div class="pip-area">';
-    for (let i = 0; i < 15; i++) {
-      const on = positions.includes(i);
-      const flip = i >= 8;
-      html += `<span class="pip ${on ? '' : 'hide'} ${flip ? 'flip' : ''}">${suit}</span>`;
-    }
-    return html + '</div>';
-  }
-
-  function faceMarkup(card) {
-    return `
-      <div class="corner">${card.rank}<span class="mini-suit">${card.suit.symbol}</span></div>
-      ${pipMarkup(card)}
-      <div class="corner bottom">${card.rank}<span class="mini-suit">${card.suit.symbol}</span></div>
-      <div class="card-watermark">POKER • PLAYING CARD</div>`;
-  }
-
-  function renderFace(el, card) {
-    el.className = 'card-face card-front' + (card.suit.color === 'red' ? ' red' : '');
-    el.innerHTML = faceMarkup(card);
-  }
-
-  function setCard(cardEl, faceEl, card, show = true) {
-    if (card) {
-      renderFace(faceEl, card);
-      cardEl.setAttribute('aria-label', `${card.rank} ${card.suit.name}`);
-    }
-    cardEl.classList.toggle('flipped', show);
-  }
-
-  function updateStats() {
-    scoreEl.textContent = score;
-    comboEl.textContent = '×' + combo;
-    accuracyEl.textContent = answered ? Math.round(correct / answered * 100) + '%' : '—';
-    roundEl.innerHTML = `${round}<span style="font-size:13px;color:#9dbeb1"> / 10</span>`;
-  }
-
-  function setMessage(text, type = '') {
-    messageEl.textContent = text;
-    messageEl.className = 'message' + (type ? ' ' + type : '');
-  }
-
-  function playTone(freq = 660, duration = .1, type = 'sine') {
-    if (!soundOn) return;
-    try {
-      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(.0001, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.055, audioCtx.currentTime + .015);
-      gain.gain.exponentialRampToValueAtTime(.0001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration + .02);
-    } catch (e) {}
-  }
-
-  function toast(text) {
-    const el = $('toast');
-    el.textContent = text;
-    el.classList.add('show');
-    clearTimeout(toast.timer);
-    toast.timer = setTimeout(() => el.classList.remove('show'), 2100);
-  }
-
-  function setButtons(enabled) {
-    suitButtons.forEach(btn => btn.disabled = !enabled);
-  }
-
-  function startGame() {
-    score = 0;
-    combo = 0;
-    round = 0;
-    correct = 0;
-    answered = 0;
-    active = true;
-    locked = false;
-    deck = makeDeck();
-
-    reference = drawCard();
-    target = null;
-
-    setCard(referenceCard, $('referenceFace'), reference, true);
-    setCard(targetCard, $('targetFace'), null, false);
-
-    $('targetCaption').textContent = 'Belum dibuka';
-    $('history').innerHTML = '<span style="font-size:12px;color:#9dbeb1">Ronde baru dimulai.</span>';
-
-    statusEl.textContent = 'PILIH SIMBOL';
-    setMessage('Pilih simbol kartu target.');
-    promptEl.textContent = `Ronde 1 dari 10 — pilih simbol kartu target.`;
-
-    startBtn.textContent = '⟳ MULAI ULANG';
-    startBtn.disabled = true;
-
-    setButtons(true);
-    updateStats();
-    nextRound();
-    playTone(520, .12);
-  }
-
-  function nextRound() {
-    if (round >= 10) {
-      finishGame();
-      return;
-    }
-
-    locked = false;
-    target = drawCard();
-    setCard(targetCard, $('targetFace'), target, false);
-    $('targetCaption').textContent = 'Menunggu tebakan';
-
-    statusEl.textContent = 'PILIH SIMBOL';
-    setButtons(true);
-    promptEl.textContent = `Ronde ${round + 1} dari 10 — pilih simbol kartu target.`;
-    startBtn.disabled = true;
-  }
-
-  function chooseSuit(symbol) {
-    if (!active || locked || !target) return;
-
-    locked = true;
-    setButtons(false);
-    answered++;
-    round++;
-
-    const isCorrect = target.suit.symbol === symbol;
-
-    if (isCorrect) {
-      correct++;
-      combo++;
-      const points = 100 + Math.max(0, combo - 1) * 25;
-      score += points;
-      playTone(820, .13);
-      setMessage(`TEPAT! ${target.rank} ${target.suit.symbol} — +${points} poin`, 'good');
-    } else {
-      combo = 0;
-      playTone(180, .22, 'triangle');
-      setMessage(`Belum tepat. Kartu target adalah ${target.rank} ${target.suit.symbol}.`, 'bad');
-    }
-
-    setCard(targetCard, $('targetFace'), target, true);
-    $('targetCaption').textContent = `${target.rank} ${target.suit.symbol}`;
-    statusEl.textContent = isCorrect ? 'TEBAKAN TEPAT' : 'RONDE SELESAI';
-
-    updateStats();
-
-    const history = $('history');
-    if (answered === 1) history.innerHTML = '';
-
-    const chip = document.createElement('span');
-    chip.className = 'history-chip ' + (isCorrect ? 'win' : 'loss');
-    chip.textContent = `${round}. ${symbol} ${isCorrect ? '✓' : '✕'} · ${target.rank}${target.suit.symbol}`;
-    history.prepend(chip);
-
-    if (history.children.length > 10) history.lastElementChild.remove();
-
-    if (round >= 10) {
-      startBtn.disabled = true;
-      setTimeout(finishGame, 900);
-    } else {
-      promptEl.textContent = isCorrect
-        ? 'Combo berlanjut! Siap untuk ronde berikutnya?'
-        : 'Coba lagi pada ronde berikutnya.';
-      startBtn.disabled = false;
-      startBtn.textContent = '▶ RONDE BERIKUTNYA';
-    }
-  }
-
-  function finishGame() {
-    active = false;
-    locked = true;
-    setButtons(false);
-    startBtn.disabled = false;
-    startBtn.textContent = '▶ MAIN LAGI';
-    statusEl.textContent = 'SESI SELESAI';
-
-    const pct = answered ? Math.round(correct / answered * 100) : 0;
-    setMessage(`Sesi selesai! Skor ${score} poin — akurasi ${pct}%.`, pct >= 70 ? 'good' : '');
-    promptEl.textContent = pct >= 70
-      ? 'Insting tajammu bersinar di meja poker!'
-      : 'Main lagi untuk meningkatkan akurasi.';
-
-    toast('Permainan selesai • ' + score + ' poin');
-    playTone(pct >= 70 ? 740 : 300, .25);
-  }
-
-  suitButtons.forEach(btn => {
-    btn.addEventListener('click', () => chooseSuit(btn.dataset.suit));
-  });
-
-  startBtn.addEventListener('click', () => {
-    if (!active || round >= 10) {
-      startGame();
-      return;
-    }
-    if (locked) nextRound();
-  });
-
-  $('restartBtn').addEventListener('click', () => {
-    startGame();
-    toast('Game baru dimulai');
-  });
-
-  $('soundBtn').addEventListener('click', () => {
-    soundOn = !soundOn;
-    $('soundBtn').innerHTML = (soundOn ? '🔊' : '🔇') +
-      ' <span class="btn-text">Suara ' + (soundOn ? 'ON' : 'OFF') + '</span>';
-    if (soundOn) playTone(660, .1);
-  });
-
-  reference = { rank: 'A', suit: SUITS[0] };
-  renderFace($('referenceFace'), reference);
-  referenceCard.classList.add('flipped');
-  setCard(targetCard, $('targetFace'), null, false);
-  updateStats();
+  el.appendChild(div);
+ });
+}
+function sound(freq=600,duration=.12,type='sine'){
+ if(!soundOn)return;
+ try{
+  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
+  if(audio.state==='suspended')audio.resume();
+  const o=audio.createOscillator(),g=audio.createGain();
+  o.type=type;o.frequency.value=freq;
+  g.gain.setValueAtTime(.0001,audio.currentTime);
+  g.gain.exponentialRampToValueAtTime(.045,audio.currentTime+.015);
+  g.gain.exponentialRampToValueAtTime(.0001,audio.currentTime+duration);
+  o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+duration+.02);
+ }catch(e){}
+}
+function update(){
+ $('points').textContent=points;
+ $('wins').textContent=wins;
+ $('losses').textContent=losses;
+ $('ties').textContent=ties;
+ $('playerScore').textContent=player.length?`Nilai: ${total(player)}`:'—';
+ $('dealerScore').textContent=dealer.length?(hiddenDealer?`Nilai: ${cardValue(dealer[0])} + ?`:`Nilai: ${total(dealer)}`):'—';
+ renderHand($('playerCards'),player);
+ renderHand($('dealerCards'),dealer,hiddenDealer);
+ $('hitBtn').disabled=!roundActive;
+ $('standBtn').disabled=!roundActive;
+ $('doubleBtn').disabled=!roundActive||player.length!==2||points<10;
+ $('dealBtn').disabled=roundActive;
+}
+function msg(text,kind=''){$('message').textContent=text;$('message').className='message '+kind}
+function addHistory(text,kind){
+ const box=$('history');
+ if(box.querySelector('span'))box.innerHTML='';
+ const item=document.createElement('span');
+ item.className='chip';
+ item.textContent=text;
+ item.style.color=kind==='win'?'#8dffd1':kind==='loss'?'#ffabb9':'#e8c77a';
+ box.prepend(item);
+ while(box.children.length>8)box.lastElementChild.remove();
+}
+function start(){
+ if(roundActive)return;
+ if(points<10){msg('Poin tidak cukup. Tekan RESET untuk memulai kembali.','bad');return}
+ player=[];dealer=[];deck=makeDeck();roundActive=true;hiddenDealer=true;doubled=false;
+ player.push(draw(),draw());dealer.push(draw(),draw());
+ $('status').textContent='RONDE BERLANGSUNG';
+ msg('Pilih HIT untuk mengambil kartu atau STAND untuk berhenti.');
+ update();sound(520);
+ if(total(player)===21)stand();
+}
+function hit(){
+ if(!roundActive)return;
+ player.push(draw());sound(650);update();
+ if(total(player)>21){
+  hiddenDealer=false;roundActive=false;losses++;
+  msg('BUST! Nilaimu melewati 21. Ronde kalah.','bad');
+  $('status').textContent='BUST';
+  addHistory('Kalah • '+total(player),'loss');
+  update();
+ }else if(total(player)===21){
+  msg('Kamu mendapat 21! Dealer akan membuka kartunya.','good');
+  setTimeout(stand,450);
+ }else{
+  msg('Nilai '+total(player)+'. Mau HIT lagi atau STAND?');
+ }
+}
+function stand(){
+ if(!roundActive)return;
+ roundActive=false;hiddenDealer=false;
+ while(total(dealer)<17)dealer.push(draw());
+ const p=total(player),d=total(dealer);
+ let outcome,kind;
+ if(p>21){outcome='Kalah — bust';kind='loss';losses++}
+ else if(d>21||p>d){outcome='MENANG!';kind='win';wins++;points+=d>21?20:20}
+ else if(p<d){outcome='Kalah ronde ini.';kind='loss';losses++}
+ else{outcome='SERI! Nilai sama.';kind='tie';ties++}
+ if(player.length===2&&p===21&&d!==21){
+  // Natural blackjack receives an additional virtual-point bonus.
+  points+=10;
+  outcome='BLACKJACK! 21 alami!';
+  kind='win';
+  wins++;
+ }
+ $('status').textContent=kind==='win'?'PEMAIN MENANG':kind==='loss'?'DEALER MENANG':'HASIL SERI';
+ msg(`${outcome} Kamu ${p} • Dealer ${d}`,kind==='win'?'good':kind==='loss'?'bad':'');
+ addHistory(`${kind==='win'?'Menang':kind==='loss'?'Kalah':'Seri'} • ${p} : ${d}`,kind);
+ update();sound(kind==='win'?850:kind==='loss'?200:480,.2);
+}
+function doubleDown(){
+ if(!roundActive||player.length!==2||points<10)return;
+ points-=10;doubled=true;
+ player.push(draw());update();sound(700);
+ if(total(player)>21){
+  hiddenDealer=false;roundActive=false;losses++;
+  $('status').textContent='BUST';
+  msg('Double Down: bust! Kamu kalah.','bad');
+  addHistory('Kalah • Double Down','loss');update();
+ }else stand();
+}
+function reset(){
+ points=1000;wins=0;losses=0;ties=0;
+ player=[];dealer=[];roundActive=false;hiddenDealer=false;doubled=false;
+ $('status').textContent='DEALER SIAP • BLACKJACK 21';
+ $('history').innerHTML='<span style="color:#9dbeb1;font-size:11px">Belum ada ronde.</span>';
+ msg('Poin direset. Siap bermain Blackjack?');
+ update();
+}
+$('dealBtn').addEventListener('click',start);
+$('hitBtn').addEventListener('click',hit);
+$('standBtn').addEventListener('click',stand);
+$('doubleBtn').addEventListener('click',doubleDown);
+$('resetBtn').addEventListener('click',reset);
+$('soundBtn').addEventListener('click',()=>{
+ soundOn=!soundOn;
+ $('soundBtn').textContent=soundOn?'🔊 Suara':'🔇 Suara';
+ if(soundOn)sound(600);
+});
+const style=document.createElement('style');
+style.textContent='.invisible{visibility:hidden}.pip.flip{transform:rotate(180deg)}';
+document.head.appendChild(style);
+update();
 })();
 </script>
 </body>
